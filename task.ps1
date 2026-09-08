@@ -11,7 +11,7 @@ foreach ($vm in $vms) {
             $diskName = $dataDisk.Name
             Write-Host "Знайдено підключений диск '$diskName' на ВМ '$($vm.Name)'."
 
-            # 2. Розмонтування диска всередині ОС ВМ (Linux)
+            # 2. Розмонтування диска всередині ОС ВМ
             Write-Host "Спроба розмонтування диска всередині ОС..."
             try {
                 Invoke-AzVMRunCommand -ResourceGroupName $resourceGroupName `
@@ -39,3 +39,7 @@ $unattachedDisks = Get-AzDisk -ResourceGroupName $resourceGroupName | Where-Obje
 # 5. Збереження результату у result.json
 $unattachedDisks | ConvertTo-Json -Depth 10 | Out-File -FilePath $outputFile -Encoding utf8
 Write-Host "Інформація про непідключені диски збережена в $outputFile."
+
+# 6. Видалення групи ресурсів
+Write-Host "Видалення групи ресурсів $resourceGroupName..."
+Remove-AzResourceGroup -Name $resourceGroupName -Force
